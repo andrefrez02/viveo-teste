@@ -1,29 +1,29 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../hooks/useAuth'
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 
 export default function Home() {
-  const navigate = useNavigate()
-  const { login } = useAuth()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
+  const navigate = useNavigate();
+  const { login } = useAuth();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
-    setLoading(true)
+    e.preventDefault();
+    setError("");
+    setLoading(true);
 
     try {
-      await login(email, password)
-      navigate('/lista')
+      await login(email, password);
+      navigate("/lista");
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to login')
+      setError(err instanceof Error ? err.message : "Failed to login");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <>
@@ -31,16 +31,21 @@ export default function Home() {
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img
             alt="Your Company"
-            src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
+            src="../../public/logo-fl-w.svg"
             className="mx-auto h-10 w-auto"
           />
-          <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-white">Entre na sua conta</h2>
+          <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-white">
+            Entre na sua conta
+          </h2>
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="email" className="block text-sm/6 font-medium text-gray-100">
+              <label
+                htmlFor="email"
+                className="block text-sm/6 font-medium text-gray-100"
+              >
                 Endereço de e-mail
               </label>
               <div className="mt-2">
@@ -59,11 +64,17 @@ export default function Home() {
 
             <div>
               <div className="flex items-center justify-between">
-                <label htmlFor="password" className="block text-sm/6 font-medium text-gray-100">
+                <label
+                  htmlFor="password"
+                  className="block text-sm/6 font-medium text-gray-100"
+                >
                   Senha
                 </label>
                 <div className="text-sm">
-                  <a href="#" className="font-semibold text-indigo-400 hover:text-indigo-300">
+                  <a
+                    href="#"
+                    className="font-semibold text-indigo-400 hover:text-indigo-300"
+                  >
                     Esqueceu a senha?
                   </a>
                 </div>
@@ -94,16 +105,16 @@ export default function Home() {
                 disabled={loading}
                 className="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? 'Entrando...' : 'Entrar'}
+                {loading ? "Entrando..." : "Entrar"}
               </button>
             </div>
           </form>
 
           <p className="mt-10 text-center text-sm/6 text-gray-400">
-            Não tem um login? {' '}
+            Não tem um login?{" "}
             <button
               type="button"
-              onClick={() => navigate('/cadastro')}
+              onClick={() => navigate("/cadastro")}
               className="font-semibold text-indigo-400 hover:text-indigo-300 bg-transparent border-none cursor-pointer"
             >
               Cadastre-se agora!
@@ -112,5 +123,5 @@ export default function Home() {
         </div>
       </div>
     </>
-  )
+  );
 }

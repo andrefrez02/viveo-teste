@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { ComponentType, SVGProps } from "react";
 import {
   Dialog,
@@ -24,10 +24,35 @@ import {
   ArrowRightOnRectangleIcon,
 } from "@heroicons/react/20/solid";
 import { useAuth } from "../hooks/useAuth";
+import { supabase } from "../lib/supabase";
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
+  const [displayName, setDisplayName] = useState("Eu");
+
+  useEffect(() => {
+    async function fetchUserName() {
+      if (!user) return;
+
+      try {
+        const { data, error } = await supabase
+          .from("users")
+          .select("first_name")
+          .eq("id", user.id)
+          .single();
+
+        if (data?.first_name) {
+          setDisplayName(data.first_name);
+        }
+      } catch (error) {
+        console.error("Erro ao carregar nome:", error);
+      }
+    }
+
+    fetchUserName();
+  }, [user]);
+
   type MenuItem = {
     name: string;
     description?: string;
@@ -40,12 +65,12 @@ export default function Header() {
     {
       name: "Meu perfil",
       description: "Ver meu perfil",
-      href: "/eu",
+      href: user ? `/user/${user.id}` : "#",
       icon: UserCircleIcon,
     },
   ];
   const callsToAction: MenuItem[] = [
-    { name: "Configurações", href: "#", icon: Cog6ToothIcon },
+    { name: "Configurações", href: "/cadastro", icon: Cog6ToothIcon },
     {
       name: "Sair",
       href: "#",
@@ -58,17 +83,17 @@ export default function Header() {
   ];
 
   return (
-    <header className="bg-gray-900">
+    <header className="bg-gray-900 border-b border-white/5">
       <nav
         aria-label="Global"
         className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
       >
         <div className="flex lg:flex-1">
-          <a href="#" className="-m-1.5 p-1.5">
+          <a href="/lista" className="-m-1.5 p-1.5">
             <span className="sr-only">viveo-teste</span>
             <img
               alt=""
-              src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
+              src="../../public/logo-fl-w.svg"
               className="h-8 w-auto"
             />
           </a>
@@ -88,8 +113,8 @@ export default function Header() {
             Feed
           </a>
           <Popover className="relative">
-            <PopoverButton className="flex items-center gap-x-1 text-sm/6 font-semibold text-white">
-              Eu
+            <PopoverButton className="flex items-center gap-x-1 text-sm/6 font-semibold text-white outline-none">
+              {displayName}
               <ChevronDownIcon
                 aria-hidden="true"
                 className="size-5 flex-none text-gray-500"
@@ -127,7 +152,7 @@ export default function Header() {
               </div>
               <div className="grid grid-cols-2 divide-x divide-white/10 bg-gray-700/50">
                 {callsToAction.map((item) => (
-                  <a
+                  <button
                     key={item.name}
                     onClick={(e) => {
                       if (item.onClick) {
@@ -137,14 +162,14 @@ export default function Header() {
                         window.location.href = item.href;
                       }
                     }}
-                    className="flex items-center justify-center gap-x-2.5 p-3 text-sm/6 font-semibold text-white hover:bg-gray-700/50"
+                    className="flex items-center justify-center gap-x-2.5 p-3 text-sm/6 font-semibold text-white hover:bg-gray-700/50 cursor-pointer w-full"
                   >
                     <item.icon
                       aria-hidden="true"
                       className="size-5 flex-none text-gray-500"
                     />
                     {item.name}
-                  </a>
+                  </button>
                 ))}
               </div>
             </PopoverPanel>
@@ -159,11 +184,11 @@ export default function Header() {
         <div className="fixed inset-0 z-50" />
         <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-gray-900 p-6 sm:max-w-sm sm:ring-1 sm:ring-gray-100/10">
           <div className="flex items-center justify-between">
-            <a href="#" className="-m-1.5 p-1.5">
+            <a href="/lista" className="-m-1.5 p-1.5">
               <span className="sr-only">viveo-teste</span>
               <img
                 alt=""
-                src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
+                src="../../public/logo-fl-w.svg"
                 className="h-8 w-auto"
               />
             </a>
@@ -187,7 +212,7 @@ export default function Header() {
                 </a>
                 <Disclosure as="div" className="-mx-3">
                   <DisclosureButton className="group flex w-full items-center justify-between rounded-lg py-2 pr-3.5 pl-3 text-base/7 font-semibold text-white hover:bg-white/5">
-                    Eu
+                    {displayName}
                     <ChevronDownIcon
                       aria-hidden="true"
                       className="size-5 flex-none group-data-open:rotate-180"

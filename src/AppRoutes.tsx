@@ -4,7 +4,7 @@ import Home from "./Views/home";
 import Cadastro from "./Views/cadastro";
 import Lista from "./Views/lista";
 import Layout from "./Views/Layout";
-import Eu from "./Views/eu";
+import User from "./Views/user";
 
 function AppRoutes() {
   const { user, loading } = useAuth();
@@ -23,10 +23,14 @@ function AppRoutes() {
       <Route element={<Layout />}>
         <Route
           path="/cadastro"
-          element={user ? <Navigate to="/lista" /> : <Cadastro />}
+          element={user ? <Cadastro /> : <Navigate to="/" />}
         />
         <Route path="/lista" element={user ? <Lista /> : <Navigate to="/" />} />
-        <Route path="/eu" element={user ? <Eu /> : <Navigate to="/" />} />
+
+        <Route
+          path="/user/:userId"
+          element={user ? <User /> : <Navigate to="/" />}
+        />
       </Route>
     </Routes>
   );

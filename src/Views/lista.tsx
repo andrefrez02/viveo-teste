@@ -1,91 +1,170 @@
-const people = [
-  {
-    name: 'Leslie Alexander',
-    email: 'leslie.alexander@example.com',
-    role: 'Co-Founder / CEO',
-    imageUrl:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    lastSeen: '3h ago',
-    lastSeenDateTime: '2023-01-23T13:23Z',
-  },
-  {
-    name: 'Michael Foster',
-    email: 'michael.foster@example.com',
-    role: 'Co-Founder / CTO',
-    imageUrl:
-      'https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    lastSeen: '3h ago',
-    lastSeenDateTime: '2023-01-23T13:23Z',
-  },
-  {
-    name: 'Dries Vincent',
-    email: 'dries.vincent@example.com',
-    role: 'Business Relations',
-    imageUrl:
-      'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    lastSeen: null,
-  },
-  {
-    name: 'Lindsay Walton',
-    email: 'lindsay.walton@example.com',
-    role: 'Front-end Developer',
-    imageUrl:
-      'https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    lastSeen: '3h ago',
-    lastSeenDateTime: '2023-01-23T13:23Z',
-  },
-  {
-    name: 'Courtney Henry',
-    email: 'courtney.henry@example.com',
-    role: 'Designer',
-    imageUrl:
-      'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    lastSeen: '3h ago',
-    lastSeenDateTime: '2023-01-23T13:23Z',
-  },
-  {
-    name: 'Tom Cook',
-    email: 'tom.cook@example.com',
-    role: 'Director of Product',
-    imageUrl:
-      'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    lastSeen: null,
-  },
-]
+import { useEffect, useState } from "react";
+import { supabase } from "../lib/supabase";
+import { Link } from "react-router-dom";
+import { UserCircleIcon } from "@heroicons/react/24/solid";
+
+interface RealUser {
+  id: string;
+  username: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  photo_url: string | null;
+  about: string | null;
+}
+
+interface FakeUser {
+  login: { uuid: string; username: string };
+  name: { first: string; last: string };
+  email: string;
+  picture: { medium: string; large: string };
+  location: { city: string; country: string };
+}
 
 export default function Lista() {
+  const [realUsers, setRealUsers] = useState<RealUser[]>([]);
+  const [fakeUsers, setFakeUsers] = useState<FakeUser[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const { data: supabaseData, error } = await supabase
+          .from("users")
+          .select("*");
+
+        if (error) console.error("Erro ao buscar usuários:", error);
+        else setRealUsers(supabaseData || []);
+
+        const apiResponse = await fetch(
+          "https://randomuser.me/api/?results=5&nat=br"
+        );
+        const apiData = await apiResponse.json();
+        setFakeUsers(apiData.results);
+      } catch (error) {
+        console.error("Erro geral:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center py-10 text-white">
+        Carregando feed...
+      </div>
+    );
+  }
+
   return (
-    <ul role="list" className="divide-y divide-white/5">
-      {people.map((person) => (
-        <li key={person.email} className="flex justify-between gap-x-6 py-5">
-          <div className="flex min-w-0 gap-x-4">
-            <img
-              alt=""
-              src={person.imageUrl}
-              className="size-12 flex-none rounded-full bg-gray-800 outline -outline-offset-1 outline-white/10"
-            />
-            <div className="min-w-0 flex-auto">
-              <p className="text-sm/6 font-semibold text-white">{person.name}</p>
-              <p className="mt-1 truncate text-xs/5 text-gray-400">{person.email}</p>
-            </div>
-          </div>
-          <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
-            <p className="text-sm/6 text-white">{person.role}</p>
-            {person.lastSeen ? (
-              <p className="mt-1 text-xs/5 text-gray-400">
-                Last seen <time dateTime={person.lastSeenDateTime}>{person.lastSeen}</time>
-              </p>
-            ) : (
-              <div className="mt-1 flex items-center gap-x-1.5">
-                <div className="flex-none rounded-full bg-emerald-500/30 p-1">
-                  <div className="size-1.5 rounded-full bg-emerald-500" />
+    <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-8">
+      <div className="mb-8">
+        <h2 className="text-lg font-semibold text-indigo-400 mb-4">
+          Minha rede
+        </h2>
+        <ul
+          role="list"
+          className="divide-y divide-white/5 bg-gray-800/50 rounded-xl ring-1 ring-white/10"
+        >
+          {realUsers.length === 0 ? (
+            <li className="p-4 text-gray-400 text-sm">
+              Nenhum usuário cadastrado ainda.
+            </li>
+          ) : (
+            realUsers.map((person) => (
+              <li
+                key={person.id}
+                className="hover:bg-white/5 transition-colors"
+              >
+                <Link
+                  to={`/user/${person.id}`}
+                  className="flex justify-between gap-x-6 py-5 px-4"
+                >
+                  <div className="flex min-w-0 gap-x-4">
+                    {person.photo_url ? (
+                      <img
+                        alt=""
+                        src={person.photo_url}
+                        className="size-12 flex-none rounded-full bg-gray-800 object-cover"
+                      />
+                    ) : (
+                      <UserCircleIcon className="size-12 flex-none text-gray-600" />
+                    )}
+                    <div className="min-w-0 flex-auto">
+                      <p className="text-sm/6 font-semibold text-white">
+                        {person.first_name} {person.last_name}
+                      </p>
+                      <p className="mt-1 truncate text-xs/5 text-gray-400">
+                        @{person.username || "sem_usuario"}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
+                    <p className="text-sm/6 text-white">Membro</p>
+                    <p className="mt-1 text-xs/5 text-gray-400">Ver perfil</p>
+                  </div>
+                </Link>
+              </li>
+            ))
+          )}
+        </ul>
+      </div>
+
+      <div className="relative my-10">
+        <div className="absolute inset-0 flex items-center" aria-hidden="true">
+          <div className="w-full border-t border-white/10" />
+        </div>
+        <div className="relative flex justify-center">
+          <span className="bg-gray-900 px-3 text-base font-semibold leading-6 text-white">
+            Sugestões
+          </span>
+        </div>
+      </div>
+
+      <div>
+        <h2 className="text-lg font-semibold text-emerald-400 mb-4">
+          Pessoas que você talvez conheça
+        </h2>
+        <ul
+          role="list"
+          className="divide-y divide-white/5 bg-gray-800/30 rounded-xl ring-1 ring-white/5"
+        >
+          {fakeUsers.map((person) => (
+            <li
+              key={person.login.uuid}
+              className="hover:bg-white/5 transition-colors"
+            >
+              <Link
+                to={`/user/${person.login.uuid}`}
+                state={{ fakeUser: person }}
+                className="flex justify-between gap-x-6 py-5 px-4"
+              >
+                <div className="flex min-w-0 gap-x-4">
+                  <img
+                    alt=""
+                    src={person.picture.medium}
+                    className="size-12 flex-none rounded-full bg-gray-800 object-cover"
+                  />
+                  <div className="min-w-0 flex-auto">
+                    <p className="text-sm/6 font-semibold text-white">
+                      {person.name.first} {person.name.last}
+                    </p>
+                    <p className="mt-1 truncate text-xs/5 text-gray-400">
+                      {person.location.city}, {person.location.country}
+                    </p>
+                  </div>
                 </div>
-                <p className="text-xs/5 text-gray-400">Online</p>
-              </div>
-            )}
-          </div>
-        </li>
-      ))}
-    </ul>
-  )
+                <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
+                  <p className="text-sm/6 text-indigo-400">Ver perfil</p>
+                </div>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
 }
