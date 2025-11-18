@@ -36,7 +36,7 @@ export default function Header() {
       if (!user) return;
 
       try {
-        const { data, error } = await supabase
+        const { data } = await supabase
           .from("users")
           .select("first_name")
           .eq("id", user.id)
