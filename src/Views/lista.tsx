@@ -36,13 +36,10 @@ export default function Lista() {
         if (error) console.error("Erro ao buscar usuários:", error);
         else setRealUsers(supabaseData || []);
 
-        const apiResponse = await fetch(
-          "https://api.allorigins.win/raw?url=" +
-            encodeURIComponent("https://randomuser.me/api/?results=5&nat=br")
-        );
+        const apiResponse = await fetch("/api/random-users");
 
         if (!apiResponse.ok) {
-          throw new Error(`Erro na API externa: ${apiResponse.status}`);
+          throw new Error(`Erro na API interna: ${apiResponse.status}`);
         }
 
         const apiData = await apiResponse.json();
