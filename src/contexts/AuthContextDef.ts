@@ -6,7 +6,10 @@ export interface AuthContextType {
   session: Session | null
   loading: boolean
   login: (email: string, password: string) => Promise<void>
-  signup: (email: string, password: string) => Promise<void>
+  signup: (
+    email: string, 
+    password: string
+  ) => Promise<{ user: User | null; session: Session | null; }>
   logout: () => Promise<void>
 }
 
