@@ -307,7 +307,7 @@ export default function Cadastro() {
               </p>
             </div>
 
-            <div className="col-span-2">
+            <div className="sm:col-span-2">
               <label className="block text-sm/6 font-medium text-white">
                 Foto
               </label>
@@ -364,7 +364,7 @@ export default function Cadastro() {
               </div>
             </div>
 
-            <div className="col-span-4">
+            <div className="sm:col-span-4">
               <label className="block text-sm/6 font-medium text-white">
                 Foto de fundo
               </label>

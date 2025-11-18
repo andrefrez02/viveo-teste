@@ -36,14 +36,70 @@ export default function Lista() {
         if (error) console.error("Erro ao buscar usuários:", error);
         else setRealUsers(supabaseData || []);
 
-        const apiResponse = await fetch("/api/random-users");
+        const apiUrl =
+          "https://api.allorigins.win/raw?url=" +
+          encodeURIComponent("https://randomuser.me/api/?results=5&nat=br");
 
-        if (!apiResponse.ok) {
-          throw new Error(`Erro na API interna: ${apiResponse.status}`);
+        const proxyUrl =
+          "https://api.allorigins.win/raw?url=" +
+          encodeURIComponent(
+            "https://corsproxy.io/?https://randomuser.me/api/?results=5&nat=br"
+          );
+
+        const localUrl = "/api/random-users.js";
+
+        let apiResponse: Response | null = null;
+        let apiResponseProxy: Response | null = null;
+        let apiResponseLocal: Response | null = null;
+        let apiData: { results: FakeUser[] } | null = null;
+
+        // Try main external API
+        try {
+          apiResponse = await fetch(apiUrl);
+        } catch (err) {
+          console.error("Erro ao chamar apiUrl:", err);
+          apiResponse = null;
         }
 
-        const apiData = await apiResponse.json();
-        setFakeUsers(apiData.results);
+        // If main failed or returned non-ok, try proxy
+        if (!apiResponse || !apiResponse.ok) {
+          try {
+            apiResponseProxy = await fetch(proxyUrl);
+          } catch (proxyError) {
+            console.error("Erro ao chamar proxyUrl:", proxyError);
+            apiResponseProxy = null;
+          }
+        }
+
+        // If both main and proxy failed, try local endpoint
+        if (
+          (!apiResponse || !apiResponse.ok) &&
+          (!apiResponseProxy || !apiResponseProxy.ok)
+        ) {
+          try {
+            apiResponseLocal = await fetch(localUrl);
+          } catch (localError) {
+            console.error("Erro ao chamar localUrl:", localError);
+            apiResponseLocal = null;
+          }
+        }
+
+        if (apiResponse && apiResponse.ok) {
+          apiData = await apiResponse.json();
+        } else if (apiResponseProxy && apiResponseProxy.ok) {
+          apiData = await apiResponseProxy.json();
+        } else if (apiResponseLocal && apiResponseLocal.ok) {
+          apiData = await apiResponseLocal.json();
+        } else {
+          const statusMsg = apiResponse
+            ? `status ${apiResponse.status}`
+            : "no response";
+          throw new Error(
+            `Erro na API externa (${statusMsg}) e todos os fallbacks falharam.`
+          );
+        }
+
+        setFakeUsers(apiData?.results || []);
       } catch (error) {
         console.error("Erro geral:", error);
       } finally {
