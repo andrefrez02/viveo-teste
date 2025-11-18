@@ -45,8 +45,8 @@ export default function Header() {
         if (data?.first_name) {
           setDisplayName(data.first_name);
         }
-      } catch (error) {
-        console.error("Erro ao buscar nome do usuário:", error);
+      } catch {
+        console.error("Erro ao buscar nome do usuário");
       }
     }
 
