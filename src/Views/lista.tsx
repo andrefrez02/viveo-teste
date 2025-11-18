@@ -53,7 +53,6 @@ export default function Lista() {
         let apiResponseLocal: Response | null = null;
         let apiData: { results: FakeUser[] } | null = null;
 
-        // Try main external API
         try {
           apiResponse = await fetch(apiUrl);
         } catch (err) {
@@ -61,7 +60,6 @@ export default function Lista() {
           apiResponse = null;
         }
 
-        // If main failed or returned non-ok, try proxy
         if (!apiResponse || !apiResponse.ok) {
           try {
             apiResponseProxy = await fetch(proxyUrl);
@@ -71,7 +69,6 @@ export default function Lista() {
           }
         }
 
-        // If both main and proxy failed, try local endpoint
         if (
           (!apiResponse || !apiResponse.ok) &&
           (!apiResponseProxy || !apiResponseProxy.ok)
