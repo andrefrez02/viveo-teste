@@ -1,9 +1,13 @@
-import { PhotoIcon, UserCircleIcon } from "@heroicons/react/24/solid";
+import {
+  PhotoIcon,
+  UserCircleIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/solid";
 import { ChevronDownIcon } from "@heroicons/react/16/solid";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { supabase } from "../lib/supabase";
-import { useState, type ChangeEvent, type FocusEvent } from "react";
+import { useState, useRef, type ChangeEvent, type FocusEvent } from "react";
 
 export default function Cadastro() {
   const navigate = useNavigate();
@@ -16,6 +20,33 @@ export default function Cadastro() {
   const [city, setCity] = useState("");
   const [region, setRegion] = useState("");
   const [isLoadingCep, setIsLoadingCep] = useState(false);
+
+  const [photoFileName, setPhotoFileName] = useState<string | null>(null);
+  const [coverPhotoFileName, setCoverPhotoFileName] = useState<string | null>(
+    null
+  );
+
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [coverPhotoFile, setCoverPhotoFile] = useState<File | null>(null);
+
+  const photoInputRef = useRef<HTMLInputElement>(null);
+  const coverInputRef = useRef<HTMLInputElement>(null);
+
+  const handleRemovePhoto = () => {
+    setPhotoFileName(null);
+    setPhotoFile(null);
+    if (photoInputRef.current) {
+      photoInputRef.current.value = "";
+    }
+  };
+
+  const handleRemoveCoverPhoto = () => {
+    setCoverPhotoFileName(null);
+    setCoverPhotoFile(null);
+    if (coverInputRef.current) {
+      coverInputRef.current.value = "";
+    }
+  };
 
   const handleCepBlur = async (event: FocusEvent<HTMLInputElement>) => {
     const cepValue = event.target.value.replace(/\D/g, "");
@@ -57,6 +88,28 @@ export default function Cadastro() {
     setCep(event.target.value);
   };
 
+  const handlePhotoFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      setPhotoFileName(file.name);
+      setPhotoFile(file);
+    } else {
+      setPhotoFileName(null);
+      setPhotoFile(null);
+    }
+  };
+
+  const handleCoverPhotoFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      setCoverPhotoFileName(file.name);
+      setCoverPhotoFile(file);
+    } else {
+      setCoverPhotoFileName(null);
+      setCoverPhotoFile(null);
+    }
+  };
+
   const handleSignup = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
@@ -75,9 +128,6 @@ export default function Cadastro() {
     const about = formData.get("about") as string;
     const streetAddress = formData.get("street-address") as string;
     const postalCode = formData.get("postal-code") as string;
-
-    const photoFile = formData.get("photo-upload") as File | null;
-    const coverPhotoFile = formData.get("cover-photo-upload") as File | null;
 
     if (!email || !password || !username) {
       setError("Email, Senha e Nome de Usuário são obrigatórios.");
@@ -216,7 +266,7 @@ export default function Cadastro() {
               </p>
             </div>
 
-            <div className="col-span-full">
+            <div className="col-span-2">
               <label
                 htmlFor="photo-upload"
                 className="block text-sm/6 font-medium text-white"
@@ -230,20 +280,40 @@ export default function Cadastro() {
                     className="mx-auto size-12 text-gray-600"
                   />
                   <div className="mt-4 flex text-sm/6 text-gray-400">
-                    <label
-                      htmlFor="photo-upload"
-                      className="relative cursor-pointer rounded-md bg-transparent font-semibold text-indigo-400 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-indigo-500 hover:text-indigo-300"
-                    >
-                      <span>Envie o arquivo</span>
-                      <input
-                        id="photo-upload"
-                        name="photo-upload"
-                        type="file"
-                        className="sr-only"
-                        accept="image/png, image/jpeg"
-                      />
-                    </label>
-                    <p className="pl-1">ou arraste e solte aqui</p>
+                    {photoFileName ? (
+                      <div className="flex items-center gap-2 bg-white/5 px-3 py-1 rounded-full">
+                        <span className="text-indigo-400 font-medium">
+                          {photoFileName}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={handleRemovePhoto}
+                          className="text-gray-400 hover:text-white transition-colors"
+                          title="Remover foto"
+                        >
+                          <XMarkIcon className="h-5 w-5" />
+                        </button>
+                      </div>
+                    ) : (
+                      <>
+                        <label
+                          htmlFor="photo-upload"
+                          className="relative cursor-pointer rounded-md bg-transparent font-semibold text-indigo-400 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-indigo-500 hover:text-indigo-300"
+                        >
+                          <span>Envie o arquivo</span>
+                          <input
+                            id="photo-upload"
+                            name="photo-upload"
+                            type="file"
+                            ref={photoInputRef}
+                            className="sr-only"
+                            accept="image/png, image/jpeg"
+                            onChange={handlePhotoFileChange}
+                          />
+                        </label>
+                        <p className="pl-1">ou arraste e solte aqui</p>
+                      </>
+                    )}
                   </div>
                   <p className="text-xs/5 text-gray-400">
                     PNG, JPG, GIF até 10MB
@@ -252,7 +322,7 @@ export default function Cadastro() {
               </div>
             </div>
 
-            <div className="col-span-full">
+            <div className="col-span-4">
               <label
                 htmlFor="cover-photo-upload"
                 className="block text-sm/6 font-medium text-white"
@@ -266,20 +336,40 @@ export default function Cadastro() {
                     className="mx-auto size-12 text-gray-600"
                   />
                   <div className="mt-4 flex text-sm/6 text-gray-400">
-                    <label
-                      htmlFor="cover-photo-upload"
-                      className="relative cursor-pointer rounded-md bg-transparent font-semibold text-indigo-400 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-indigo-500 hover:text-indigo-300"
-                    >
-                      <span>Envie o arquivo</span>
-                      <input
-                        id="cover-photo-upload"
-                        name="cover-photo-upload"
-                        type="file"
-                        className="sr-only"
-                        accept="image/png, image/jpeg"
-                      />
-                    </label>
-                    <p className="pl-1">ou arraste e solte aqui</p>
+                    {coverPhotoFileName ? (
+                      <div className="flex items-center gap-2 bg-white/5 px-3 py-1 rounded-full">
+                        <span className="text-indigo-400 font-medium">
+                          {coverPhotoFileName}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={handleRemoveCoverPhoto}
+                          className="text-gray-400 hover:text-white transition-colors"
+                          title="Remover banner"
+                        >
+                          <XMarkIcon className="h-5 w-5" />
+                        </button>
+                      </div>
+                    ) : (
+                      <>
+                        <label
+                          htmlFor="cover-photo-upload"
+                          className="relative cursor-pointer rounded-md bg-transparent font-semibold text-indigo-400 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-indigo-500 hover:text-indigo-300"
+                        >
+                          <span>Envie o arquivo</span>
+                          <input
+                            id="cover-photo-upload"
+                            name="cover-photo-upload"
+                            type="file"
+                            ref={coverInputRef}
+                            className="sr-only"
+                            accept="image/png, image/jpeg"
+                            onChange={handleCoverPhotoFileChange}
+                          />
+                        </label>
+                        <p className="pl-1">ou arraste e solte aqui</p>
+                      </>
+                    )}
                   </div>
                   <p className="text-xs/5 text-gray-400">
                     PNG, JPG, GIF até 10MB
