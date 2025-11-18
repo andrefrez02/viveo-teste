@@ -4,3 +4,31 @@
   max-width: 1280px;
   margin: 0 auto;
 }
+
+div,
+button,
+a,
+input,
+select,
+textarea {
+  transition: all 0.2s ease-in-out;
+}
+
+button,
+a,
+input[type="submit"],
+input[type="button"],
+select,
+label[for] {
+  cursor: pointer;
+}
+
+button:hover,
+a:hover {
+  opacity: 0.9;
+}
+
+button:active,
+a:active {
+  transform: scale(0.99);
+}

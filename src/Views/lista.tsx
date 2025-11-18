@@ -37,8 +37,14 @@ export default function Lista() {
         else setRealUsers(supabaseData || []);
 
         const apiResponse = await fetch(
-          "https://randomuser.me/api/?results=5&nat=br"
+          "https://api.allorigins.win/raw?url=" +
+            encodeURIComponent("https://randomuser.me/api/?results=5&nat=br")
         );
+
+        if (!apiResponse.ok) {
+          throw new Error(`Erro na API externa: ${apiResponse.status}`);
+        }
+
         const apiData = await apiResponse.json();
         setFakeUsers(apiData.results);
       } catch (error) {

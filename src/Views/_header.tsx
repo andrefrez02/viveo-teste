@@ -71,6 +71,7 @@ export default function Header() {
       icon: UserCircleIcon,
     },
   ];
+
   const callsToAction: MenuItem[] = [
     { name: "Configurações", href: "/cadastro", icon: Cog6ToothIcon },
     {
@@ -79,10 +80,18 @@ export default function Header() {
       icon: ArrowRightOnRectangleIcon,
       onClick: () => {
         logout();
+        navigate("/");
         setMobileMenuOpen(false);
       },
     },
   ];
+
+  const handleMobileLinkClick = (href?: string) => {
+    setMobileMenuOpen(false);
+    if (href && href !== "#") {
+      navigate(href);
+    }
+  };
 
   return (
     <header className="bg-gray-900 border-b border-white/5">
@@ -110,74 +119,87 @@ export default function Header() {
             <Bars3Icon aria-hidden="true" className="size-6" />
           </button>
         </div>
+
         <PopoverGroup className="hidden lg:flex lg:gap-x-12">
           <Link to="/lista" className="text-sm/6 font-semibold text-white">
             Feed
           </Link>
-          <Popover className="relative">
-            <PopoverButton className="flex items-center gap-x-1 text-sm/6 font-semibold text-white outline-none">
-              {displayName}
-              <ChevronDownIcon
-                aria-hidden="true"
-                className="size-5 flex-none text-gray-500"
-              />
-            </PopoverButton>
 
-            <PopoverPanel
-              transition
-              className="-ml-32 absolute left-1/2 z-10 mt-3 w-screen max-w-md -translate-x-1/2 overflow-hidden rounded-3xl bg-gray-800 outline-1 -outline-offset-1 outline-white/10 transition data-closed:translate-y-1 data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-150 data-leave:ease-in"
-            >
-              <div className="p-4">
-                {products.map((item) => (
-                  <div
-                    key={item.name}
-                    className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm/6 hover:bg-white/5"
-                  >
-                    <div className="flex size-11 flex-none items-center justify-center rounded-lg bg-gray-700/50 group-hover:bg-gray-700">
-                      <item.icon
-                        aria-hidden="true"
-                        className="size-6 text-gray-400 group-hover:text-white"
-                      />
-                    </div>
-                    <div className="flex-auto">
-                      <Link
-                        to={item.href || "#"}
-                        className="block font-semibold text-white"
+          <Popover className="relative">
+            {({ close }) => (
+              <>
+                <PopoverButton className="flex items-center gap-x-1 text-sm/6 font-semibold text-white outline-none">
+                  {displayName}
+                  <ChevronDownIcon
+                    aria-hidden="true"
+                    className="size-5 flex-none text-gray-500"
+                  />
+                </PopoverButton>
+
+                <PopoverPanel
+                  transition
+                  className="-ml-32 absolute left-1/2 z-10 mt-3 w-screen max-w-md -translate-x-1/2 overflow-hidden rounded-3xl bg-gray-800 outline-1 -outline-offset-1 outline-white/10 transition data-closed:translate-y-1 data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-150 data-leave:ease-in"
+                >
+                  <div className="p-4">
+                    {products.map((item) => (
+                      <div
+                        key={item.name}
+                        className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm/6 hover:bg-white/5"
                       >
-                        {item.name}
-                        <span className="absolute inset-0" />
-                      </Link>
-                      <p className="mt-1 text-gray-400">{item.description}</p>
-                    </div>
+                        <div className="flex size-11 flex-none items-center justify-center rounded-lg bg-gray-700/50 group-hover:bg-gray-700">
+                          <item.icon
+                            aria-hidden="true"
+                            className="size-6 text-gray-400 group-hover:text-white"
+                          />
+                        </div>
+                        <div className="flex-auto">
+                          <Link
+                            to={item.href || "#"}
+                            className="block font-semibold text-white"
+                            onClick={() => close()}
+                          >
+                            {item.name}
+                            <span className="absolute inset-0" />
+                          </Link>
+                          <p className="mt-1 text-gray-400">
+                            {item.description}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-              <div className="grid grid-cols-2 divide-x divide-white/10 bg-gray-700/50">
-                {callsToAction.map((item) => (
-                  <button
-                    key={item.name}
-                    onClick={(e) => {
-                      if (item.onClick) {
-                        e.preventDefault();
-                        item.onClick();
-                      } else if (item.href && item.href !== "#") {
-                        navigate(item.href);
-                      }
-                    }}
-                    className="flex items-center justify-center gap-x-2.5 p-3 text-sm/6 font-semibold text-white hover:bg-gray-700/50 cursor-pointer w-full"
-                  >
-                    <item.icon
-                      aria-hidden="true"
-                      className="size-5 flex-none text-gray-500"
-                    />
-                    {item.name}
-                  </button>
-                ))}
-              </div>
-            </PopoverPanel>
+                  <div className="grid grid-cols-2 divide-x divide-white/10 bg-gray-700/50">
+                    {callsToAction.map((item) => (
+                      <button
+                        key={item.name}
+                        type="button"
+                        onClick={(e) => {
+                          if (item.onClick) {
+                            item.onClick();
+                            e.preventDefault();
+                            close();
+                          } else if (item.href && item.href !== "#") {
+                            navigate(item.href);
+                            close();
+                          }
+                        }}
+                        className="flex items-center justify-center gap-x-2.5 p-3 text-sm/6 font-semibold text-white hover:bg-gray-700/50 cursor-pointer w-full"
+                      >
+                        <item.icon
+                          aria-hidden="true"
+                          className="size-5 flex-none text-gray-500"
+                        />
+                        {item.name}
+                      </button>
+                    ))}
+                  </div>
+                </PopoverPanel>
+              </>
+            )}
           </Popover>
         </PopoverGroup>
       </nav>
+
       <Dialog
         open={mobileMenuOpen}
         onClose={setMobileMenuOpen}
@@ -186,7 +208,11 @@ export default function Header() {
         <div className="fixed inset-0 z-50" />
         <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-gray-900 p-6 sm:max-w-sm sm:ring-1 sm:ring-gray-100/10">
           <div className="flex items-center justify-between">
-            <Link to="/lista" className="-m-1.5 p-1.5">
+            <Link
+              to="/lista"
+              className="-m-1.5 p-1.5"
+              onClick={() => setMobileMenuOpen(false)}
+            >
               <span className="sr-only">viveo-teste</span>
               <img
                 alt=""
@@ -206,12 +232,13 @@ export default function Header() {
           <div className="mt-6 flow-root">
             <div className="-my-6 divide-y divide-white/10">
               <div className="space-y-2 py-6">
-                <Link
-                  to="/lista"
-                  className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white hover:bg-white/5"
+                <button
+                  type="button"
+                  onClick={() => handleMobileLinkClick("/lista")}
+                  className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white hover:bg-white/5 w-full text-left"
                 >
                   Feed
-                </Link>
+                </button>
                 <Disclosure as="div" className="-mx-3">
                   <DisclosureButton className="group flex w-full items-center justify-between rounded-lg py-2 pr-3.5 pl-3 text-base/7 font-semibold text-white hover:bg-white/5">
                     {displayName}
@@ -224,12 +251,13 @@ export default function Header() {
                     {[...products, ...callsToAction].map((item) => (
                       <button
                         key={item.name}
+                        type="button"
                         onClick={(e) => {
                           if (item.onClick) {
                             e.preventDefault();
                             item.onClick();
                           } else if (item.href && item.href !== "#") {
-                            navigate(item.href);
+                            handleMobileLinkClick(item.href);
                           }
                         }}
                         className="block w-full text-left rounded-lg py-2 pr-3 pl-6 text-sm/7 font-semibold text-white hover:bg-white/5"
