@@ -31,7 +31,7 @@ export default function Home() {
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img
             alt="Your Company"
-            src="../../public/logo-fl-w.svg"
+            src="https://raw.githubusercontent.com/andrefrez02/viveo-teste/fab6cbde5dd79c0575ddcc555b3b48cc19e3bec4/public/logo-fl-w.svg"
             className="mx-auto h-10 w-auto"
           />
           <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-white">
