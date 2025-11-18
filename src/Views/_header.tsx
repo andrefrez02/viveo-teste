@@ -140,34 +140,32 @@ export default function Header() {
                   transition
                   className="-ml-32 absolute left-1/2 z-10 mt-3 w-screen max-w-md -translate-x-1/2 overflow-hidden rounded-3xl bg-gray-800 outline-1 -outline-offset-1 outline-white/10 transition data-closed:translate-y-1 data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-150 data-leave:ease-in"
                 >
-                  <div className="p-4">
-                    {products.map((item) => (
-                      <div
-                        key={item.name}
-                        className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm/6 hover:bg-white/5"
-                      >
-                        <div className="flex size-11 flex-none items-center justify-center rounded-lg bg-gray-700/50 group-hover:bg-gray-700">
-                          <item.icon
-                            aria-hidden="true"
-                            className="size-6 text-gray-400 group-hover:text-white"
-                          />
-                        </div>
-                        <div className="flex-auto">
-                          <Link
-                            to={item.href || "#"}
-                            className="block font-semibold text-white"
-                            onClick={() => close()}
-                          >
-                            {item.name}
-                            <span className="absolute inset-0" />
-                          </Link>
-                          <p className="mt-1 text-gray-400">
-                            {item.description}
-                          </p>
+                  {products.map((item) => (
+                    <Link to={item.href || "#"} onClick={() => close()}>
+                      <div className="p-4">
+                        <div
+                          key={item.name}
+                          className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm/6 hover:bg-white/5"
+                        >
+                          <div className="flex size-11 flex-none items-center justify-center rounded-lg bg-gray-700/50 group-hover:bg-gray-700">
+                            <item.icon
+                              aria-hidden="true"
+                              className="size-6 text-gray-400 group-hover:text-white"
+                            />
+                          </div>
+                          <div className="flex-auto">
+                            <span className="block font-semibold text-white">
+                              {item.name}
+                              <span className="absolute inset-0" />
+                            </span>
+                            <p className="mt-1 text-gray-400">
+                              {item.description}
+                            </p>
+                          </div>
                         </div>
                       </div>
-                    ))}
-                  </div>
+                    </Link>
+                  ))}
                   <div className="grid grid-cols-2 divide-x divide-white/10 bg-gray-700/50">
                     {callsToAction.map((item) => (
                       <button

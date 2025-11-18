@@ -2,7 +2,7 @@
 
 Este repositório contém a solução desenvolvida para a avaliação técnica de Front-end da Viveo. O projeto consiste em uma aplicação web responsiva com autenticação, cadastro de usuários, perfil e consumo de APIs externas, desenvolvida com foco em código limpo, usabilidade e melhores práticas.
 
-## 🚀 Tecnologias Utilizadas
+## Tecnologias Utilizadas
 
 O projeto foi construído utilizando a stack moderna recomendada, garantindo performance e escalabilidade:
 
@@ -13,7 +13,7 @@ O projeto foi construído utilizando a stack moderna recomendada, garantindo per
 - **React Router DOM** (para roteamento e navegação SPA)
 - **Supabase** (Backend-as-a-Service para Autenticação, Banco de Dados e Storage de Imagens)
 
-## ✨ Funcionalidades Implementadas
+## Funcionalidades Implementadas
 
 Atendendo aos requisitos do desafio:
 
@@ -40,19 +40,19 @@ Atendendo aos requisitos do desafio:
     - **Layout Persistente:** Header com menu responsivo (mobile/desktop) e dropdown de usuário.
     - **Deploy:** Configuração pronta para Vercel (SPA rewrites).
 
-## 📦 Como Rodar o Projeto
+## Como Rodar o Projeto
 
 ### Pré-requisitos
 
-- Node.js instalado (versão 18+ recomendada).
-- Uma conta no [Supabase](https://supabase.com) (Grátis).
+- Node.js instalado.
+- Uma conta no [Supabase](https://supabase.com).
 
 ### Passos
 
 1.  **Clone o repositório:**
 
     ```bash
-    git clone [https://github.com/seu-usuario/viveo-teste.git](https://github.com/seu-usuario/viveo-teste.git)
+    git clone [https://github.com/seu-usuario/viveo-teste.git](https://github.com/andrefrez02/viveo-teste.git)
     cd viveo-teste
     ```
 
@@ -76,7 +76,7 @@ Atendendo aos requisitos do desafio:
     ```
     Acesse `http://localhost:5173` no seu navegador.
 
-## 🗄️ Estrutura do Banco de Dados (Supabase)
+## Estrutura do Banco de Dados (Supabase)
 
 Para o funcionamento correto, o projeto espera uma tabela `public.users` e buckets de storage configurados.
 
@@ -86,5 +86,3 @@ Para o funcionamento correto, o projeto espera uma tabela `public.users` e bucke
 _(Consulte o arquivo `SUPABASE_SETUP.md` incluído no projeto para o guia passo-a-passo da configuração do backend)._
 
 ---
-
-Desenvolvido por **André**.
