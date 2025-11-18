@@ -25,11 +25,13 @@ import {
 } from "@heroicons/react/20/solid";
 import { useAuth } from "../hooks/useAuth";
 import { supabase } from "../lib/supabase";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, logout } = useAuth();
   const [displayName, setDisplayName] = useState("Eu");
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchUserName() {
@@ -89,14 +91,14 @@ export default function Header() {
         className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
       >
         <div className="flex lg:flex-1">
-          <a href="/lista" className="-m-1.5 p-1.5">
+          <Link to="/lista" className="-m-1.5 p-1.5">
             <span className="sr-only">viveo-teste</span>
             <img
               alt=""
               src="https://raw.githubusercontent.com/andrefrez02/viveo-teste/fab6cbde5dd79c0575ddcc555b3b48cc19e3bec4/public/logo-fl-w.svg"
               className="h-8 w-auto"
             />
-          </a>
+          </Link>
         </div>
         <div className="flex lg:hidden">
           <button
@@ -109,9 +111,9 @@ export default function Header() {
           </button>
         </div>
         <PopoverGroup className="hidden lg:flex lg:gap-x-12">
-          <a href="/lista" className="text-sm/6 font-semibold text-white">
+          <Link to="/lista" className="text-sm/6 font-semibold text-white">
             Feed
-          </a>
+          </Link>
           <Popover className="relative">
             <PopoverButton className="flex items-center gap-x-1 text-sm/6 font-semibold text-white outline-none">
               {displayName}
@@ -138,13 +140,13 @@ export default function Header() {
                       />
                     </div>
                     <div className="flex-auto">
-                      <a
-                        href={item.href}
+                      <Link
+                        to={item.href || "#"}
                         className="block font-semibold text-white"
                       >
                         {item.name}
                         <span className="absolute inset-0" />
-                      </a>
+                      </Link>
                       <p className="mt-1 text-gray-400">{item.description}</p>
                     </div>
                   </div>
@@ -159,7 +161,7 @@ export default function Header() {
                         e.preventDefault();
                         item.onClick();
                       } else if (item.href && item.href !== "#") {
-                        window.location.href = item.href;
+                        navigate(item.href);
                       }
                     }}
                     className="flex items-center justify-center gap-x-2.5 p-3 text-sm/6 font-semibold text-white hover:bg-gray-700/50 cursor-pointer w-full"
@@ -184,14 +186,14 @@ export default function Header() {
         <div className="fixed inset-0 z-50" />
         <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-gray-900 p-6 sm:max-w-sm sm:ring-1 sm:ring-gray-100/10">
           <div className="flex items-center justify-between">
-            <a href="/lista" className="-m-1.5 p-1.5">
+            <Link to="/lista" className="-m-1.5 p-1.5">
               <span className="sr-only">viveo-teste</span>
               <img
                 alt=""
                 src="https://raw.githubusercontent.com/andrefrez02/viveo-teste/fab6cbde5dd79c0575ddcc555b3b48cc19e3bec4/public/logo-fl-w.svg"
                 className="h-8 w-auto"
               />
-            </a>
+            </Link>
             <button
               type="button"
               onClick={() => setMobileMenuOpen(false)}
@@ -204,12 +206,12 @@ export default function Header() {
           <div className="mt-6 flow-root">
             <div className="-my-6 divide-y divide-white/10">
               <div className="space-y-2 py-6">
-                <a
-                  href="/lista"
+                <Link
+                  to="/lista"
                   className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white hover:bg-white/5"
                 >
                   Feed
-                </a>
+                </Link>
                 <Disclosure as="div" className="-mx-3">
                   <DisclosureButton className="group flex w-full items-center justify-between rounded-lg py-2 pr-3.5 pl-3 text-base/7 font-semibold text-white hover:bg-white/5">
                     {displayName}
@@ -227,7 +229,7 @@ export default function Header() {
                             e.preventDefault();
                             item.onClick();
                           } else if (item.href && item.href !== "#") {
-                            window.location.href = item.href;
+                            navigate(item.href);
                           }
                         }}
                         className="block w-full text-left rounded-lg py-2 pr-3 pl-6 text-sm/7 font-semibold text-white hover:bg-white/5"

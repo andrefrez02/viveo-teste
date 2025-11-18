@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 
 export default function Home() {
@@ -71,12 +71,12 @@ export default function Home() {
                   Senha
                 </label>
                 <div className="text-sm">
-                  <a
-                    href="#"
+                  <Link
+                    to="#"
                     className="font-semibold text-indigo-400 hover:text-indigo-300"
                   >
                     Esqueceu a senha?
-                  </a>
+                  </Link>
                 </div>
               </div>
               <div className="mt-2">
