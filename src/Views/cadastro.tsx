@@ -244,6 +244,12 @@ export default function Cadastro() {
 
       if (dbError) throw dbError;
 
+      if (isEditMode) {
+        navigate("/lista");
+      } else {
+        navigate("/");
+      }
+
       navigate("/lista");
     } catch (err) {
       console.error(err);

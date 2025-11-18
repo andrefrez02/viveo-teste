@@ -54,46 +54,43 @@ export default function Lista() {
         let apiData: { results: FakeUser[] } | null = null;
 
         try {
-          apiResponse = await fetch(apiUrl);
-        } catch (err) {
-          console.error("Erro ao chamar apiUrl:", err);
-          apiResponse = null;
+          apiResponseLocal = await fetch(localUrl);
+        } catch (localError) {
+          console.error("Erro ao chamar localUrl:", localError);
+          apiResponseLocal = null;
         }
 
-        if (!apiResponse || !apiResponse.ok) {
-          try {
-            apiResponseProxy = await fetch(proxyUrl);
-          } catch (proxyError) {
-            console.error("Erro ao chamar proxyUrl:", proxyError);
-            apiResponseProxy = null;
-          }
-        }
-
-        if (
-          (!apiResponse || !apiResponse.ok) &&
-          (!apiResponseProxy || !apiResponseProxy.ok)
-        ) {
-          try {
-            apiResponseLocal = await fetch(localUrl);
-          } catch (localError) {
-            console.error("Erro ao chamar localUrl:", localError);
-            apiResponseLocal = null;
-          }
-        }
-
-        if (apiResponse && apiResponse.ok) {
-          apiData = await apiResponse.json();
-        } else if (apiResponseProxy && apiResponseProxy.ok) {
-          apiData = await apiResponseProxy.json();
-        } else if (apiResponseLocal && apiResponseLocal.ok) {
+        if (apiResponseLocal && apiResponseLocal.ok) {
           apiData = await apiResponseLocal.json();
         } else {
-          const statusMsg = apiResponse
-            ? `status ${apiResponse.status}`
-            : "no response";
-          throw new Error(
-            `Erro na API externa (${statusMsg}) e todos os fallbacks falharam.`
-          );
+          try {
+            apiResponse = await fetch(apiUrl);
+          } catch (err) {
+            console.error("Erro ao chamar apiUrl:", err);
+            apiResponse = null;
+          }
+
+          if (!apiResponse || !apiResponse.ok) {
+            try {
+              apiResponseProxy = await fetch(proxyUrl);
+            } catch (proxyError) {
+              console.error("Erro ao chamar proxyUrl:", proxyError);
+              apiResponseProxy = null;
+            }
+          }
+
+          if (apiResponse && apiResponse.ok) {
+            apiData = await apiResponse.json();
+          } else if (apiResponseProxy && apiResponseProxy.ok) {
+            apiData = await apiResponseProxy.json();
+          } else {
+            const statusMsg = apiResponse
+              ? `status ${apiResponse.status}`
+              : "no response";
+            throw new Error(
+              `Erro na API externa (${statusMsg}) e todos os fallbacks falharam.`
+            );
+          }
         }
 
         setFakeUsers(apiData?.results || []);
