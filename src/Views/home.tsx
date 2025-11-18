@@ -112,13 +112,12 @@ export default function Home() {
 
           <p className="mt-10 text-center text-sm/6 text-gray-400">
             Não tem um login?{" "}
-            <button
-              type="button"
-              onClick={() => navigate("/cadastro")}
+            <a
+              href="/cadastro"
               className="font-semibold text-indigo-400 hover:text-indigo-300 bg-transparent border-none cursor-pointer"
             >
               Cadastre-se agora!
-            </button>
+            </a>
           </p>
         </div>
       </div>
