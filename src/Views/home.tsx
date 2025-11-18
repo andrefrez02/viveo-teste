@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom"; // Link já está importado aqui
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 
 export default function Home() {
@@ -41,7 +41,6 @@ export default function Home() {
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* ... (Inputs de Email e Senha permanecem iguais) ... */}
             <div>
               <label
                 htmlFor="email"
@@ -72,12 +71,12 @@ export default function Home() {
                   Senha
                 </label>
                 <div className="text-sm">
-                  <Link
-                    to="#"
+                  <a
+                    href="#"
                     className="font-semibold text-indigo-400 hover:text-indigo-300"
                   >
                     Esqueceu a senha?
-                  </Link>
+                  </a>
                 </div>
               </div>
               <div className="mt-2">
@@ -111,15 +110,15 @@ export default function Home() {
             </div>
           </form>
 
-          <p className="mt-10 text-center text-sm/6 text-gray-400 flex flex-col items-center gap-2">
+          <p className="mt-10 text-center text-sm/6 text-gray-400">
             Não tem um login?{" "}
-            {/* CORREÇÃO AQUI: Trocamos 'a' por 'Link' e adicionamos 'p-2' para area de toque */}
-            <Link
-              to="/cadastro"
-              className="font-semibold text-indigo-400 hover:text-indigo-300 p-2 rounded hover:bg-white/5 transition-colors"
+            <button
+              type="button"
+              onClick={() => navigate("/cadastro")}
+              className="font-semibold text-indigo-400 hover:text-indigo-300 bg-transparent border-none cursor-pointer"
             >
               Cadastre-se agora!
-            </Link>
+            </button>
           </p>
         </div>
       </div>
