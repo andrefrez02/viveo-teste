@@ -20,11 +20,8 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={user ? <Navigate to="/lista" /> : <Home />} />
 
-      <Route element={<Layout />}>
-        <Route
-          path="/cadastro"
-          element={user ? <Cadastro /> : <Navigate to="/" />}
-        />
+      <Route element={user ? <Layout /> : null}>
+        <Route path="/cadastro" element={<Cadastro />} />
         <Route path="/lista" element={user ? <Lista /> : <Navigate to="/" />} />
 
         <Route

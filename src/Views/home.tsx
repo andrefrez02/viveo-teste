@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 
 export default function Home() {
@@ -70,14 +70,6 @@ export default function Home() {
                 >
                   Senha
                 </label>
-                <div className="text-sm">
-                  <a
-                    href="#"
-                    className="font-semibold text-indigo-400 hover:text-indigo-300"
-                  >
-                    Esqueceu a senha?
-                  </a>
-                </div>
               </div>
               <div className="mt-2">
                 <input
@@ -112,13 +104,12 @@ export default function Home() {
 
           <p className="mt-10 text-center text-sm/6 text-gray-400">
             Não tem um login?{" "}
-            <button
-              type="button"
-              onClick={() => navigate("/cadastro")}
-              className="font-semibold text-indigo-400 hover:text-indigo-300 bg-transparent border-none cursor-pointer"
+            <Link
+              to="/cadastro"
+              className="font-semibold text-indigo-400 hover:text-indigo-300 bg-transparent border-none cursor-pointer p-0 inline"
             >
               Cadastre-se agora!
-            </button>
+            </Link>
           </p>
         </div>
       </div>
